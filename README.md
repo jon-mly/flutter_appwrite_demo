@@ -9,12 +9,12 @@ Simple ToDo-list app made with Flutter to run on all currently stable platforms 
 This project is made to experiment around multiple features and tech :
 
 On the app/Flutter side :
-- Riverpod as a state-management principle on the app/Flutter side
-- Freezed and StateNotifier as complements of Riverpod for improving the state-management 
-- Handling of all platforms in a single project, taking account of the singularities of each one of them, especially regarding the UX experience
+- Riverpod as a state-management principle on the app/Flutter side.
+- StateNotifier as complements of Riverpod for improving the state-management.
+- Handling of all platforms in a single project, and implementing responsive and adaptative layout.
 
 On the server side :
-- AppWrite as a BaaS solution to work with a self-hosted Firebase alternative system
+- AppWrite as a BaaS solution to work with a self-hosted Firebase alternative system.
 - Experimenting around back-end dev, Docker, hosting solutions, etc...
 
 ### Next steps

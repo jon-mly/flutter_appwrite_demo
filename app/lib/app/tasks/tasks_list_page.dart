@@ -1,5 +1,6 @@
 import 'package:appwrite_demo/app/tasks/providers/task_list_providers.dart';
 import 'package:appwrite_demo/app/tasks/tasks_list_state.dart';
+import 'package:appwrite_demo/app/tasks/widget/task_tile.dart';
 import 'package:appwrite_demo/models/classes/task.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,6 +34,12 @@ class _TaskListPageState extends ConsumerState<TaskListPage> {
   // ########## UI
   //
 
+  Widget _buildTaskTile(Task task) {
+    return TaskTile(
+        task: task,
+        onToggled: (bool selected) => _toggleTaskCheckbox(task.id, selected));
+  }
+
   Widget _buildTasksList(TaskListState state) {
     return ListView.builder(
         itemCount: state.tasks.length + ((state.isLoading) ? 1 : 0),
@@ -40,17 +47,7 @@ class _TaskListPageState extends ConsumerState<TaskListPage> {
           if (index == state.tasks.length) {
             return const CircularProgressIndicator();
           }
-
-          final Task task = state.tasks[index];
-          return ListTile(
-            title: Text(task.title),
-            subtitle: (task.text != null) ? Text(task.text!) : null,
-            leading: Checkbox(
-              value: task.done,
-              onChanged: (bool? selected) =>
-                  _toggleTaskCheckbox(task.id, selected!),
-            ),
-          );
+          return _buildTaskTile(state.tasks[index]);
         });
   }
 

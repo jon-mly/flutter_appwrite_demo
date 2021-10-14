@@ -10,11 +10,17 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
 
   final ITasksService _service;
 
+  //
+  // Tasks
+  //
+
   Future<void> toggleTask(String id, bool selected) async {
     // Internal update
     List<Task> tasks = state.tasks;
     tasks.firstWhere((task) => task.id == id).done = selected;
     state = TaskListState(tasks: tasks, isLoading: false);
+
+    // Implement
   }
 
   Future<void> getTasks() async {
