@@ -15,6 +15,7 @@ dependencies:
   flutter_riverpod: ^1.0.0-dev.11
   state_notifier: ^0.7.1
   build_runner: ^2.1.4
+  copy_with_extension_gen: ^2.0.3
 
 dev_dependencies:
   flutter_test:

@@ -9,9 +9,7 @@ class TaskListPage extends ConsumerStatefulWidget {
   const TaskListPage({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() {
-    return _TaskListPageState();
-  }
+  ConsumerState<ConsumerStatefulWidget> createState() => _TaskListPageState();
 }
 
 class _TaskListPageState extends ConsumerState<TaskListPage> {

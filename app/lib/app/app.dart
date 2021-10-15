@@ -1,4 +1,4 @@
-import 'package:appwrite_demo/app/tasks/tasks_list_page.dart';
+import 'package:appwrite_demo/app/auth/auth_page.dart';
 import 'package:flutter/material.dart';
 
 class App extends StatelessWidget {
@@ -11,7 +11,7 @@ class App extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const TaskListPage(),
+      home: const AuthPage(),
     );
   }
 }

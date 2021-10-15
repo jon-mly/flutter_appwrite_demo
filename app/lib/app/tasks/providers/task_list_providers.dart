@@ -5,8 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // StateNotifier
 final tasksListProvider =
-    StateNotifierProvider<TaskListNotifier, TaskListState>(
+    StateNotifierProvider.autoDispose<TaskListNotifier, TaskListState>(
         (ref) => TaskListNotifier(service: ref.watch(_tasksServiceProvider)));
 
 // Service Provider
-final _tasksServiceProvider = Provider<ITasksService>((ref) => TasksService());
+final _tasksServiceProvider =
+    Provider.autoDispose<ITasksService>((ref) => TasksService());

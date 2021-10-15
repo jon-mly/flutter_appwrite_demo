@@ -1,9 +1,30 @@
-class AuthState {
-  String? email;
-  String? password;
-  bool isLoading = false;
+import 'package:copy_with_extension/copy_with_extension.dart';
 
-  AuthState({this.email, this.password, this.isLoading = false});
+part 'auth_state.g.dart';
+
+@CopyWith()
+class AuthState {
+  Credentials? credentials;
+  AuthStatus authStatus;
+  AuthRequestStatus loginStatus;
+  AuthRequestStatus signUpStatus;
+
+  AuthState(
+      {this.credentials,
+      this.authStatus = AuthStatus.initialize,
+      this.loginStatus = AuthRequestStatus.initialize,
+      this.signUpStatus = AuthRequestStatus.initialize});
 
   factory AuthState.initial() => AuthState();
+}
+
+enum AuthStatus { initialize, authenticated, unauthenticated }
+
+enum AuthRequestStatus { initialize, loading, success, failed }
+
+class Credentials {
+  String email;
+  String password;
+
+  Credentials(this.email, this.password);
 }
