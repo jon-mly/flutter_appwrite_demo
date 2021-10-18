@@ -16,6 +16,8 @@ dependencies:
   state_notifier: ^0.7.1
   build_runner: ^2.1.4
   copy_with_extension_gen: ^2.0.3
+  appwrite: ^2.0.3
+  shared_preferences: ^2.0.8
 
 dev_dependencies:
   flutter_test:

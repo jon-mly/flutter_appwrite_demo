@@ -1,3 +1,4 @@
+import 'package:appwrite/models.dart';
 import 'package:appwrite_demo/app/auth/data/auth_state.dart';
 import 'package:appwrite_demo/services/auth/auth_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,10 +14,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
   // Auth
   //
 
+  Future<void> getActiveSession() async {}
+
   Future<void> login(String email, String password) async {
     state = state.copyWith(loginStatus: AuthRequestStatus.loading);
     try {
-      await _service.login(email, password).then((bool loggedIn) {
+      await _service
+          .createAccountSession(email, password)
+          .then((User loggedIn) {
         if (loggedIn) {
           state = state.copyWith(
               loginStatus: AuthRequestStatus.success,
