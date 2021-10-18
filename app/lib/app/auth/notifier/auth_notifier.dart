@@ -1,4 +1,4 @@
-import 'package:appwrite_demo/app/auth/auth_state.dart';
+import 'package:appwrite_demo/app/auth/data/auth_state.dart';
 import 'package:appwrite_demo/services/auth/auth_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

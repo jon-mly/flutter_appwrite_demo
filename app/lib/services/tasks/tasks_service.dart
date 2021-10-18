@@ -3,6 +3,9 @@ import 'package:appwrite_demo/models/enums/task_priority.dart';
 
 abstract class ITasksService {
   Future<List<Task>> getTasks();
+  Future<void> addTask(Task task);
+  Future<void> updateTask(Task task);
+  Future<void> deleteTask(Task task);
 }
 
 class TasksService implements ITasksService {
@@ -22,5 +25,23 @@ class TasksService implements ITasksService {
               priority: TaskPriority.normal,
               date: DateTime.utc(2021, 10, 13)),
         ]);
+  }
+
+  @override
+  Future<void> addTask(Task task) {
+    // TODO: implement addTask
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updateTask(Task task) {
+    // TODO: implement updateTask
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> deleteTask(Task task) {
+    // TODO: implement deleteTask
+    throw UnimplementedError();
   }
 }

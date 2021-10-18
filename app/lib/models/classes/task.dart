@@ -1,26 +1,28 @@
 import 'package:appwrite_demo/models/enums/task_priority.dart';
 
 class Task {
-  String id = "";
-  String title = "";
+  String? id;
+  String? title;
   String? text;
   String? userId;
-  bool done = false;
-  TaskPriority priority = TaskPriority.normal;
-  DateTime date = DateTime.now();
+  late bool done;
+  late TaskPriority priority;
+  DateTime? date;
   DateTime? reminderDate;
   DateTime? doneDate;
 
   Task(
-      {required this.id,
-      required this.title,
+      {this.id,
+      this.title,
       this.text,
       this.userId,
-      required this.done,
-      required this.priority,
-      required this.date,
+      this.done = false,
+      this.priority = TaskPriority.normal,
+      this.date,
       this.reminderDate,
       this.doneDate});
+
+  factory Task.empty() => Task();
 
   Task.fromMap(Map<String, dynamic> map) {
     id = map[_TaskMapKeys.idKey];

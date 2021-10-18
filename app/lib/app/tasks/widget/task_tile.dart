@@ -2,10 +2,15 @@ import 'package:appwrite_demo/models/classes/task.dart';
 import 'package:flutter/material.dart';
 
 class TaskTile extends StatelessWidget {
-  const TaskTile({Key? key, required this.task, required this.onToggled})
+  const TaskTile(
+      {Key? key,
+      required this.task,
+      required this.onToggled,
+      required this.onTap})
       : super(key: key);
 
   final Task task;
+  final VoidCallback onTap;
   final ValueChanged<bool> onToggled;
 
   //
@@ -32,7 +37,7 @@ class TaskTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            task.title,
+            task.title ?? "",
             style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
           ),
           if (task.text != null) Text(task.text!)
@@ -55,12 +60,15 @@ class TaskTile extends StatelessWidget {
                 blurRadius: 6,
                 offset: const Offset(1, 2))
           ]),
-      child: Row(
-        children: [
-          _buildCheckboxPart(),
-          Expanded(child: _buildTextPart()),
-          _buildDatesPart()
-        ],
+      child: InkWell(
+        onTap: onTap,
+        child: Row(
+          children: [
+            _buildCheckboxPart(),
+            Expanded(child: _buildTextPart()),
+            _buildDatesPart()
+          ],
+        ),
       ),
     );
   }

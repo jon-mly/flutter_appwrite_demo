@@ -1,5 +1,6 @@
+import 'package:appwrite_demo/app/tasks/data/tasks_list_state.dart';
 import 'package:appwrite_demo/app/tasks/providers/task_list_providers.dart';
-import 'package:appwrite_demo/app/tasks/tasks_list_state.dart';
+import 'package:appwrite_demo/app/tasks/widget/task_edit_bottom_sheet.dart';
 import 'package:appwrite_demo/app/tasks/widget/task_tile.dart';
 import 'package:appwrite_demo/models/classes/task.dart';
 import 'package:flutter/material.dart';
@@ -13,20 +14,47 @@ class TaskListPage extends ConsumerStatefulWidget {
 }
 
 class _TaskListPageState extends ConsumerState<TaskListPage> {
+  //
+  // ########## Lifecycle
+  //
+
   @override
   void initState() {
     super.initState();
 
-    ref.read(tasksListProvider.notifier).getTasks();
+    ref.read(tasksListStateProvider.notifier).getTasks();
+  }
+
+  //
+  // ########## Navigation
+  //
+
+  void _presentAddTaskPopup() {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return const TaskEditBottomSheet();
+        });
+  }
+
+  void _presentEditTaskPopup(Task task) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return TaskEditBottomSheet(editedTask: task);
+        });
   }
 
   //
   // ########## Events
   //
 
-  void _toggleTaskCheckbox(String taskId, bool selected) {
-    ref.read(tasksListProvider.notifier).toggleTask(taskId, selected);
+  void _toggleTaskCheckbox(String? taskId, bool selected) {
+    if (taskId == null) return;
+    ref.read(tasksListStateProvider.notifier).toggleTask(taskId, selected);
   }
+
+  void _deleteTask(Task task) {}
 
   //
   // ########## UI
@@ -35,12 +63,14 @@ class _TaskListPageState extends ConsumerState<TaskListPage> {
   Widget _buildTaskTile(Task task) {
     return TaskTile(
         task: task,
+        onTap: () => _presentEditTaskPopup(task),
         onToggled: (bool selected) => _toggleTaskCheckbox(task.id, selected));
   }
 
   Widget _buildTasksList(TaskListState state) {
     return ListView.builder(
-        itemCount: state.tasks.length + ((state.isLoading) ? 1 : 0),
+        itemCount: state.tasks.length +
+            ((state.status == TaskListStatus.loading) ? 1 : 0),
         itemBuilder: (context, index) {
           if (index == state.tasks.length) {
             return const CircularProgressIndicator();
@@ -54,22 +84,27 @@ class _TaskListPageState extends ConsumerState<TaskListPage> {
       child: Column(
         children: [
           const Text("such empty..."),
-          if (state.isLoading) const CircularProgressIndicator()
+          if (state.status == TaskListStatus.loading)
+            const CircularProgressIndicator()
         ],
       ),
     );
   }
 
-  Widget _buildBody(TaskListState state) {
+  Widget _buildBody() {
+    final TaskListState state = ref.watch(tasksListStateProvider);
     if (state.tasks.isEmpty) return _buildEmptyList(state);
     return _buildTasksList(state);
   }
 
   @override
   Widget build(BuildContext context) {
-    final TaskListState state = ref.watch(tasksListProvider);
     return Scaffold(
-      body: _buildBody(state),
+      body: _buildBody(),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: _presentAddTaskPopup,
+      ),
       appBar: AppBar(
         title: Column(
           children: const [

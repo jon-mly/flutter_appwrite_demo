@@ -1,4 +1,4 @@
-import 'package:appwrite_demo/app/auth/auth_state.dart';
+import 'package:appwrite_demo/app/auth/data/auth_state.dart';
 import 'package:appwrite_demo/app/auth/providers/auth_providers.dart';
 import 'package:appwrite_demo/app/tasks/tasks_list_page.dart';
 import 'package:flutter/material.dart';

@@ -1,4 +1,4 @@
-import 'package:appwrite_demo/app/tasks/tasks_list_state.dart';
+import 'package:appwrite_demo/app/tasks/data/tasks_list_state.dart';
 import 'package:appwrite_demo/models/classes/task.dart';
 import 'package:appwrite_demo/services/tasks/tasks_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,20 +18,22 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
     // Internal update
     List<Task> tasks = state.tasks;
     tasks.firstWhere((task) => task.id == id).done = selected;
-    state = TaskListState(tasks: tasks, isLoading: false);
+    state = state.copyWith(tasks: tasks);
 
-    // Implement
+    // Implement AppWrite
   }
 
+  Future<void> deleteTask(Task task) async {}
+
   Future<void> getTasks() async {
-    state = TaskListState(tasks: state.tasks, isLoading: true);
+    state = state.copyWith(status: TaskListStatus.loading);
 
     try {
       await _service.getTasks().then((List<Task> tasks) {
-        state = TaskListState(tasks: tasks, isLoading: false);
+        state = state.copyWith(tasks: tasks, status: TaskListStatus.loaded);
       });
     } catch (e) {
-      state = TaskListState(tasks: state.tasks, isLoading: false);
+      state = state.copyWith(status: TaskListStatus.failed);
       // Error handling to set up
     }
   }
