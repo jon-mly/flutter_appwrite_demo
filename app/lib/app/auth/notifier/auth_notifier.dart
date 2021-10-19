@@ -19,19 +19,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> login(String email, String password) async {
     state = state.copyWith(loginStatus: AuthRequestStatus.loading);
     try {
-      await _service
-          .createAccountSession(email, password)
-          .then((User loggedIn) {
-        if (loggedIn) {
-          state = state.copyWith(
-              loginStatus: AuthRequestStatus.success,
-              authStatus: AuthStatus.authenticated);
-        } else {
-          state = state.copyWith(
-              loginStatus: AuthRequestStatus.failed,
-              authStatus: AuthStatus.unauthenticated);
-        }
-      });
+      final Session session =
+          await _service.createAccountSession(email, password);
+      // TODO: save session id
+      // TODO: handle data to be retained during the app's lifecycle
+      state = state.copyWith(
+          loginStatus: AuthRequestStatus.success,
+          authStatus: AuthStatus.authenticated);
     } catch (e) {
       state = state.copyWith(loginStatus: AuthRequestStatus.failed);
       // Error handling to set up
@@ -41,16 +35,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> signUp(String email, String password) async {
     state = state.copyWith(signUpStatus: AuthRequestStatus.loading);
     try {
-      await _service.signUp(email, password).then((bool loggedIn) {
-        if (loggedIn) {
-          state = state.copyWith(
-              signUpStatus: AuthRequestStatus.success,
-              authStatus: AuthStatus.authenticated);
-        } else {
-          state = state.copyWith(
-              signUpStatus: AuthRequestStatus.failed,
-              authStatus: AuthStatus.unauthenticated);
-        }
+      await _service.signUp(email, password).then((User user) {
+        // TODO: implement
+        state = state.copyWith(
+            signUpStatus: AuthRequestStatus.success,
+            authStatus: AuthStatus.authenticated);
       });
     } catch (e) {
       state = state.copyWith(signUpStatus: AuthRequestStatus.failed);

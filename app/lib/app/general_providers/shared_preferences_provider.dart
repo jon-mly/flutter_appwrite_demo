@@ -5,9 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 final _sharedPreferencesProvider = FutureProvider<SharedPreferences>(
     (_) async => await SharedPreferences.getInstance());
 
-final sharedPrefsDataProvider =
-    StateNotifierProvider<SharedPreferencesDataNotifier, SharedPreferencesData?>(
-        (ref) {
+final sharedPrefsDataProvider = StateNotifierProvider<
+    SharedPreferencesDataNotifier, SharedPreferencesData?>((ref) {
   final pref = ref
       .watch(_sharedPreferencesProvider)
       .maybeWhen(data: (prefs) => prefs, orElse: () => null);
@@ -20,9 +19,13 @@ class SharedPreferencesDataNotifier
       : _pref = pref,
         super(null) {
     _fetchAll();
-  };
+  }
 
   final SharedPreferences? _pref;
+
+  //
+  // Initial fetch
+  //
 
   void _fetchAll() {
     if (_pref == null) {
@@ -30,8 +33,16 @@ class SharedPreferencesDataNotifier
       return;
     }
     state = SharedPreferencesData(
-      activeAccountSessionId: _pref?.getString("active_account_session_id")
-    );
+        activeAccountSessionId: _pref?.getString("active_account_session_id"));
+  }
+
+  //
+  // Data setting along the app's lifecycle
+  //
+
+  void setCurrentSessionId(String id) {
+    _pref?.setString("active_account_session_id", id);
+    state = state?.copyWith(activeAccountSessionId: id);
   }
 
   // Improvements :

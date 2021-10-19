@@ -10,4 +10,4 @@ final authStateProvider =
 
 // Service Provider
 final _authServiceProvider =
-    Provider.autoDispose<IAuthService>((ref) => AuthService());
+    Provider.autoDispose<IAuthService>((ref) => AuthService(ref.read));

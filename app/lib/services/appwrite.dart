@@ -1,5 +1,5 @@
 import 'package:appwrite/appwrite.dart';
-import 'package:appwrite_demo/app/config/config_providers.dart';
+import 'package:appwrite_demo/app/general_providers/config_providers.dart';
 import 'package:appwrite_demo/models/classes/config.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
