@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Service
 
 final _tasksServiceProvider =
-    Provider.autoDispose<ITasksService>((ref) => TasksService());
+    Provider.autoDispose<ITasksService>((ref) => TasksService(ref.read));
 
 // Task List Page
 

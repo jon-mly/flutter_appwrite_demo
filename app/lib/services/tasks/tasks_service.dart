@@ -1,5 +1,10 @@
+import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/models.dart';
+import 'package:appwrite_demo/app/auth/providers/auth_providers.dart';
+import 'package:appwrite_demo/app/general_providers/config_providers.dart';
 import 'package:appwrite_demo/models/classes/task.dart';
-import 'package:appwrite_demo/models/enums/task_priority.dart';
+import 'package:appwrite_demo/services/appwrite.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 abstract class ITasksService {
   Future<List<Task>> getTasks();
@@ -9,22 +14,42 @@ abstract class ITasksService {
 }
 
 class TasksService implements ITasksService {
+  final Reader _read;
+
+  TasksService(this._read);
+
+  //
+  // Streams with Realtime
+  //
+
+  Stream<RealtimeMessage> getTasksStream() {
+    final Realtime realtime = _read(appwriteRealtimeProvider);
+    final String collectionId = _read(configurationProvider).appwriteDbTasksId;
+    final RealtimeSubscription tasksSubscription =
+        realtime.subscribe(["collections.$collectionId"]);
+
+    return tasksSubscription.stream;
+  }
+
+  //
+  // CRUD with Tasks
+  //
+
   @override
-  Future<List<Task>> getTasks() {
-    return Future.delayed(const Duration(seconds: 2)).then((_) => [
-          Task(
-              id: "fake_id_1",
-              title: "Task 1",
-              done: false,
-              priority: TaskPriority.normal,
-              date: DateTime.utc(2021, 10, 10)),
-          Task(
-              id: "fake_id_2",
-              title: "Task 2",
-              done: false,
-              priority: TaskPriority.normal,
-              date: DateTime.utc(2021, 10, 13)),
-        ]);
+  Future<List<Task>> getTasks() async {
+    final String collectionId = _read(configurationProvider).appwriteDbTasksId;
+
+    final String? userId = _read(userIdProvider);
+    // In real scenario, should throw an error to indicate a problem with the
+    // general flow of the app.
+    if (userId == null) return [];
+
+    return await _read(appwriteDatabaseProvider).listDocuments(
+        collectionId: collectionId,
+        filters: ["userId=$userId"]).then((DocumentList list) {
+      print(list);
+      return [];
+    });
   }
 
   @override

@@ -14,35 +14,57 @@ class AuthNotifier extends StateNotifier<AuthState> {
   // Auth
   //
 
-  Future<void> getActiveSession() async {}
+  Future<void> getActiveSession() async {
+    state = state.copyWith(loginStatus: AuthRequestStatus.loading);
+    try {
+      final Session? activeSession = await _service.getActiveSession();
+      if (activeSession == null) {
+        state = state.copyWith(
+            loginStatus: AuthRequestStatus.failed,
+            authStatus: AuthStatus.unauthenticated);
+      } else {
+        state = state.copyWith(
+            loginStatus: AuthRequestStatus.success,
+            authStatus: AuthStatus.authenticated,
+            sessionId: activeSession.$id,
+            userId: activeSession.userId);
+      }
+    } catch (e) {
+      state = state.copyWith(loginStatus: AuthRequestStatus.failed);
+      rethrow;
+    }
+  }
 
   Future<void> login(String email, String password) async {
     state = state.copyWith(loginStatus: AuthRequestStatus.loading);
     try {
       final Session session =
           await _service.createAccountSession(email, password);
-      // TODO: save session id
-      // TODO: handle data to be retained during the app's lifecycle
       state = state.copyWith(
           loginStatus: AuthRequestStatus.success,
-          authStatus: AuthStatus.authenticated);
+          authStatus: AuthStatus.authenticated,
+          sessionId: session.$id,
+          userId: session.userId);
     } catch (e) {
-      state = state.copyWith(loginStatus: AuthRequestStatus.failed);
-      // Error handling to set up
+      state = state.copyWith(loginStatus: AuthRequestStatus.nonExistent);
+      rethrow;
     }
   }
 
   Future<void> signUp(String email, String password) async {
     state = state.copyWith(signUpStatus: AuthRequestStatus.loading);
     try {
-      await _service.signUp(email, password).then((User user) {
-        // TODO: implement
-        state = state.copyWith(
-            signUpStatus: AuthRequestStatus.success,
-            authStatus: AuthStatus.authenticated);
-      });
+      final User user = await _service.signUp(email, password);
+      final Session session =
+          await _service.createAccountSession(email, password);
+      state = state.copyWith(
+          signUpStatus: AuthRequestStatus.success,
+          authStatus: AuthStatus.authenticated,
+          sessionId: session.$id,
+          userId: session.userId);
     } catch (e) {
       state = state.copyWith(signUpStatus: AuthRequestStatus.failed);
+      rethrow;
       // Error handling to set up
     }
   }

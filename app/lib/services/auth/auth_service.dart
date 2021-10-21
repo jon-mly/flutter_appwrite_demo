@@ -32,8 +32,9 @@ class AuthService implements IAuthService {
     final String? sessionId =
         _read(sharedPrefsDataProvider)?.activeAccountSessionId;
     if (sessionId == null) return null;
-    final Session session = await _read(appwriteAccountProvider)
-        .getSession(sessionId: sessionId);
+    final Session session =
+        await _read(appwriteAccountProvider).getSession(sessionId: sessionId);
+    // Optional since the session will be the same
     _read(sharedPrefsDataProvider.notifier).setCurrentSessionId(session.$id);
     return session;
   }
@@ -47,7 +48,7 @@ class AuthService implements IAuthService {
     final Session session = await _read(appwriteAccountProvider)
         .createSession(email: email, password: password);
     _read(sharedPrefsDataProvider.notifier).setCurrentSessionId(session.$id);
-    return session.
+    return session;
   }
 
   /// Creates a new User with the given credentials.
@@ -58,8 +59,8 @@ class AuthService implements IAuthService {
   ///
   /// If the process fails, the method will throw.
   @override
-  Future<User> signUp(String email, String password) {
-    return _read(appwriteAccountProvider)
+  Future<User> signUp(String email, String password) async {
+    return await _read(appwriteAccountProvider)
         .create(email: email, password: password);
   }
 }

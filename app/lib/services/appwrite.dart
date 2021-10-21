@@ -16,5 +16,8 @@ final appwriteClientProvider = Provider<Client>((ref) {
 final appwriteAccountProvider =
     Provider<Account>((ref) => Account(ref.watch(appwriteClientProvider)));
 
+final appwriteDatabaseProvider =
+    Provider<Database>((ref) => Database(ref.watch(appwriteClientProvider)));
+
 final appwriteRealtimeProvider =
-    Provider<Account>((ref) => Account(ref.watch(appwriteClientProvider)));
+    Provider<Realtime>((ref) => Realtime(ref.watch(appwriteClientProvider)));

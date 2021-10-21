@@ -34,6 +34,7 @@ class TaskListNotifier extends StateNotifier<TaskListState> {
       });
     } catch (e) {
       state = state.copyWith(status: TaskListStatus.failed);
+      rethrow;
       // Error handling to set up
     }
   }

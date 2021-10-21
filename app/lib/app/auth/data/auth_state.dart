@@ -8,19 +8,23 @@ class AuthState {
   AuthStatus authStatus;
   AuthRequestStatus loginStatus;
   AuthRequestStatus signUpStatus;
+  String? sessionId;
+  String? userId;
 
   AuthState(
       {this.credentials,
       this.authStatus = AuthStatus.initialize,
       this.loginStatus = AuthRequestStatus.initialize,
-      this.signUpStatus = AuthRequestStatus.initialize});
+      this.signUpStatus = AuthRequestStatus.initialize,
+      this.sessionId,
+      this.userId});
 
   factory AuthState.initial() => AuthState();
 }
 
 enum AuthStatus { initialize, authenticated, unauthenticated }
 
-enum AuthRequestStatus { initialize, loading, success, failed }
+enum AuthRequestStatus { initialize, loading, success, failed, nonExistent }
 
 class Credentials {
   String email;

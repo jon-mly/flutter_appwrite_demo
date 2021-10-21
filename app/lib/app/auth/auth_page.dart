@@ -36,6 +36,16 @@ class _AuthPageState extends ConsumerState<AuthPage> {
   // ########## Events
   //
 
+  Future<void> _getActiveSession() async {
+    await ref.read(authStateProvider.notifier).getActiveSession();
+
+    final AuthStatus status = ref.read(authStateProvider).authStatus;
+    if (status == AuthStatus.authenticated) {
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (_) => const TaskListPage()));
+    }
+  }
+
   Future<void> _signUp() async {
     final String email = _emailController.text;
     final String password = _emailController.text;
@@ -87,6 +97,11 @@ class _AuthPageState extends ConsumerState<AuthPage> {
               decoration: const InputDecoration(hintText: "Password"),
             ),
             ElevatedButton(
+                onPressed: _getActiveSession,
+                child: (loginStatus == AuthRequestStatus.loading)
+                    ? const CircularProgressIndicator()
+                    : const Text("Get Active Session")),
+            ElevatedButton(
                 onPressed: _login,
                 child: (loginStatus == AuthRequestStatus.loading)
                     ? const CircularProgressIndicator()
@@ -105,6 +120,9 @@ class _AuthPageState extends ConsumerState<AuthPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("AppWrite + Riverpod Demo"),
+      ),
       body: _buildBody(),
     );
   }

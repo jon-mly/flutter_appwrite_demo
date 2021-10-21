@@ -21,8 +21,7 @@ class _TaskListPageState extends ConsumerState<TaskListPage> {
   @override
   void initState() {
     super.initState();
-
-    ref.read(tasksListStateProvider.notifier).getTasks();
+    _getTasks();
   }
 
   //
@@ -48,6 +47,10 @@ class _TaskListPageState extends ConsumerState<TaskListPage> {
   //
   // ########## Events
   //
+
+  void _getTasks() {
+    ref.read(tasksListStateProvider.notifier).getTasks();
+  }
 
   void _toggleTaskCheckbox(String? taskId, bool selected) {
     if (taskId == null) return;
@@ -111,6 +114,10 @@ class _TaskListPageState extends ConsumerState<TaskListPage> {
             Text("Riverpod + StateNotifier + AppWrite"),
             Text("Tasks List"),
           ],
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.refresh_rounded),
+          onPressed: _getTasks,
         ),
       ),
     );
