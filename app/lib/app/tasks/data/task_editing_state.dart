@@ -15,4 +15,4 @@ class TaskEditingState {
   factory TaskEditingState.create() => TaskEditingState(task: Task.empty());
 }
 
-enum TaskEditingStatus { initial, loading, success }
+enum TaskEditingStatus { initial, loading, success, failed }

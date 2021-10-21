@@ -17,21 +17,36 @@ class TaskEditingNotifier extends StateNotifier<TaskEditingState> {
   // User Actions
   //
 
-  void registerSelectedPriority(TaskPriority priority) {}
+  void registerSelectedPriority(TaskPriority priority) {
+    state = state.copyWith(task: state.task.copyWith(priority: priority));
+  }
 
-  void registerSelectedReminderDate(DateTime date) {}
+  void registerSelectedReminderDate(DateTime date) {
+    state = state.copyWith(task: state.task.copyWith(reminderDate: date));
+  }
 
   //
   // Service Actions
   //
 
-  Future<void> saveTask() async {
+  Future<void> saveTask(String title, String? text) async {
     state = state.copyWith(status: TaskEditingStatus.loading);
 
-    await Future.delayed(const Duration(seconds: 2)).then((value) {
-      state = state.copyWith(status: TaskEditingStatus.success);
-    });
+    Task task = state.task;
+    task.title = title;
+    task.text = text;
+    task.date = DateTime.now();
+    task.done = false;
 
-    // TODO: if doc exists, edit, else save
+    try {
+      if (task.id == null) {
+        await _service.addTask(task);
+      } else {
+        await _service.updateTask(task);
+      }
+      state = state.copyWith(status: TaskEditingStatus.success);
+    } catch (e) {
+      state = state.copyWith(status: TaskEditingStatus.failed);
+    }
   }
 }

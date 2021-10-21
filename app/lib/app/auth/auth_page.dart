@@ -22,6 +22,10 @@ class _AuthPageState extends ConsumerState<AuthPage> {
   @override
   void initState() {
     super.initState();
+
+    // Doesn't work. Might be related to SharedPreferences not being ready at
+    // the time this is fired given the quick start scenario.
+    _getActiveSession();
   }
 
   @override

@@ -1,5 +1,9 @@
 import 'package:appwrite_demo/models/enums/task_priority.dart';
+import 'package:copy_with_extension/copy_with_extension.dart';
 
+part 'task.g.dart';
+
+@CopyWith()
 class Task {
   String? id;
   String? title;
@@ -24,14 +28,16 @@ class Task {
 
   factory Task.empty() => Task();
 
-  Task.fromMap(Map<String, dynamic> map) {
+  Task.fromAppWrite(Map<String, dynamic> map) {
     id = map[_TaskMapKeys.idKey];
     title = map[_TaskMapKeys.titleKey];
     text = map[_TaskMapKeys.textKey];
     userId = map[_TaskMapKeys.userIdKey];
     done = map[_TaskMapKeys.doneKey];
     priority = TaskPriority.values[map[_TaskMapKeys.priorityKey]];
-    date = DateTime.fromMillisecondsSinceEpoch(map[_TaskMapKeys.dateKey]);
+    if (map[_TaskMapKeys.dateKey] != null) {
+      date = DateTime.fromMillisecondsSinceEpoch(map[_TaskMapKeys.dateKey]);
+    }
     if (map[_TaskMapKeys.reminderDateKey] != null) {
       reminderDate = DateTime.fromMillisecondsSinceEpoch(
           map[_TaskMapKeys.reminderDateKey]);
@@ -41,10 +47,23 @@ class Task {
           DateTime.fromMillisecondsSinceEpoch(map[_TaskMapKeys.doneDateKey]);
     }
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      _TaskMapKeys.titleKey: title,
+      _TaskMapKeys.textKey: text,
+      _TaskMapKeys.userIdKey: userId,
+      _TaskMapKeys.doneKey: done,
+      _TaskMapKeys.priorityKey: priority.index,
+      _TaskMapKeys.dateKey: date?.millisecondsSinceEpoch,
+      _TaskMapKeys.reminderDateKey: reminderDate?.millisecondsSinceEpoch,
+      _TaskMapKeys.doneDateKey: doneDate?.millisecondsSinceEpoch
+    };
+  }
 }
 
 class _TaskMapKeys {
-  static const String idKey = "id";
+  static const String idKey = "\$id";
   static const String titleKey = "title";
   static const String textKey = "text";
   static const String userIdKey = "userId";

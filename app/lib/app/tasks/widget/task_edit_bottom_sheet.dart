@@ -59,9 +59,11 @@ class _TaskEditBottomSheetState extends ConsumerState<TaskEditBottomSheet> {
   }
 
   void _presentReminderDateSelection() async {
+    final DateTime? previouslySelectedDate =
+        ref.read(provider).task.reminderDate;
     final DateTime? picked = await showDatePicker(
         context: context,
-        initialDate: DateTime.now(),
+        initialDate: previouslySelectedDate ?? DateTime.now(),
         firstDate: DateTime.now(),
         lastDate: DateTime(2025));
     if (picked == null) return;
@@ -81,7 +83,9 @@ class _TaskEditBottomSheetState extends ConsumerState<TaskEditBottomSheet> {
   }
 
   Future<void> _saveTask() async {
-    await ref.read(provider.notifier).saveTask();
+    await ref
+        .read(provider.notifier)
+        .saveTask(_titleEditingController.text, _textEditingController.text);
 
     TaskEditingStatus status = ref.read(provider).status;
     if (status == TaskEditingStatus.success) {
@@ -108,9 +112,10 @@ class _TaskEditBottomSheetState extends ConsumerState<TaskEditBottomSheet> {
   }
 
   Widget _buildPrioritySelector() {
-    const TaskPriority priority = TaskPriority.normal;
+    final TaskPriority selectedPriority =
+        ref.watch(provider.select((state) => state.task.priority));
     final TaskPriorityUiElements priorityUiElements =
-        TaskPriorityUiElements.priority(priority);
+        TaskPriorityUiElements.priority(selectedPriority);
     return Column(
       children: [
         InkWell(
@@ -159,10 +164,11 @@ class _TaskEditBottomSheetState extends ConsumerState<TaskEditBottomSheet> {
   }
 
   Widget _buildReminderDate() {
-    bool isDateSelected = false;
+    DateTime? selectedReminderDate =
+        ref.watch(provider.select((state) => state.task.reminderDate));
     return InkWell(
       onTap: _presentReminderDateSelection,
-      child: (isDateSelected)
+      child: (selectedReminderDate == null)
           ? Text(DateTime.now().toString())
           : const Text("Add a reminder date"),
     );
