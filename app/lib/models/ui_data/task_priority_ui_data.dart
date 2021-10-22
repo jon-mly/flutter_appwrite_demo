@@ -25,7 +25,7 @@ class TaskPriorityUiElements {
   static const TaskPriorityUiElements _warning =
       TaskPriorityUiElements._("Warning", Colors.lime);
   static const TaskPriorityUiElements _important =
-      TaskPriorityUiElements._("Important", Colors.lime);
+      TaskPriorityUiElements._("Important", Colors.redAccent);
   static const TaskPriorityUiElements _urgent =
-      TaskPriorityUiElements._("Urgent", Colors.redAccent);
+      TaskPriorityUiElements._("Urgent", Colors.purple);
 }

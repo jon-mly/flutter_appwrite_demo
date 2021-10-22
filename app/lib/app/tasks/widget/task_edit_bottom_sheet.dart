@@ -20,6 +20,8 @@ class _TaskEditBottomSheetState extends ConsumerState<TaskEditBottomSheet> {
   final TextEditingController _titleEditingController = TextEditingController();
   final TextEditingController _textEditingController = TextEditingController();
 
+  bool _taskIsEdited = false;
+
   bool _priorityAccordionOpen = false;
 
   AutoDisposeStateNotifierProvider<TaskEditingNotifier, TaskEditingState>
@@ -33,10 +35,12 @@ class _TaskEditBottomSheetState extends ConsumerState<TaskEditBottomSheet> {
   void initState() {
     super.initState();
 
+    _taskIsEdited = widget.editedTask != null;
+
     final Task? initialTask = ref.read(provider).task;
 
     if (initialTask != null) {
-      _titleEditingController.text = initialTask.text ?? "";
+      _textEditingController.text = initialTask.text ?? "";
       _titleEditingController.text = initialTask.title ?? "";
     }
   }
@@ -87,7 +91,15 @@ class _TaskEditBottomSheetState extends ConsumerState<TaskEditBottomSheet> {
         .read(provider.notifier)
         .saveTask(_titleEditingController.text, _textEditingController.text);
 
-    TaskEditingStatus status = ref.read(provider).status;
+    TaskEditingStatus status = ref.read(provider).saveStatus;
+    if (status == TaskEditingStatus.success) {
+      Navigator.of(context).pop();
+    }
+  }
+
+  Future<void> _deleteTask() async {
+    await ref.read(provider.notifier).deleteTask();
+    TaskEditingStatus status = ref.read(provider).deleteStatus;
     if (status == TaskEditingStatus.success) {
       Navigator.of(context).pop();
     }
@@ -168,21 +180,36 @@ class _TaskEditBottomSheetState extends ConsumerState<TaskEditBottomSheet> {
         ref.watch(provider.select((state) => state.task.reminderDate));
     return InkWell(
       onTap: _presentReminderDateSelection,
-      child: (selectedReminderDate == null)
-          ? Text(DateTime.now().toString())
+      child: (selectedReminderDate != null)
+          ? Text(selectedReminderDate.toString())
           : const Text("Add a reminder date"),
     );
   }
 
   Widget _buildSaveButton() {
-    final status =
-        ref.watch(provider.select((TaskEditingState state) => state.status));
+    final status = ref
+        .watch(provider.select((TaskEditingState state) => state.saveStatus));
     return ElevatedButton(
       onPressed: _saveTask,
       child: (status == TaskEditingStatus.loading)
           ? const CircularProgressIndicator()
           : const Text("Save"),
     );
+  }
+
+  Widget _buildDeleteButton() {
+    final status = ref
+        .watch(provider.select((TaskEditingState state) => state.deleteStatus));
+    return (status == TaskEditingStatus.loading)
+        ? const CircularProgressIndicator(
+            color: Colors.red,
+          )
+        : TextButton(
+            onPressed: _deleteTask,
+            child: const Text(
+              "Delete",
+              style: TextStyle(color: Colors.red),
+            ));
   }
 
   @override
@@ -193,6 +220,7 @@ class _TaskEditBottomSheetState extends ConsumerState<TaskEditBottomSheet> {
       _buildPrioritySelector(),
       _buildReminderDate(),
       _buildSaveButton(),
+      if (_taskIsEdited) _buildDeleteButton()
     ];
 
     return Padding(

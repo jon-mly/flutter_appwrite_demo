@@ -8,11 +8,13 @@ part of 'task_editing_state.dart';
 
 extension TaskEditingStateCopyWith on TaskEditingState {
   TaskEditingState copyWith({
-    TaskEditingStatus? status,
+    TaskEditingStatus? deleteStatus,
+    TaskEditingStatus? saveStatus,
     Task? task,
   }) {
     return TaskEditingState(
-      status: status ?? this.status,
+      deleteStatus: deleteStatus ?? this.deleteStatus,
+      saveStatus: saveStatus ?? this.saveStatus,
       task: task ?? this.task,
     );
   }

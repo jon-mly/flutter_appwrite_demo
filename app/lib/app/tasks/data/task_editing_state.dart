@@ -6,10 +6,13 @@ part 'task_editing_state.g.dart';
 @CopyWith()
 class TaskEditingState {
   Task task;
-  TaskEditingStatus status;
+  TaskEditingStatus saveStatus;
+  TaskEditingStatus deleteStatus;
 
   TaskEditingState(
-      {required this.task, this.status = TaskEditingStatus.initial});
+      {required this.task,
+      this.saveStatus = TaskEditingStatus.initial,
+      this.deleteStatus = TaskEditingStatus.initial});
 
   factory TaskEditingState.edit(Task task) => TaskEditingState(task: task);
   factory TaskEditingState.create() => TaskEditingState(task: Task.empty());

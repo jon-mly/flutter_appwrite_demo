@@ -30,13 +30,12 @@ class TaskEditingNotifier extends StateNotifier<TaskEditingState> {
   //
 
   Future<void> saveTask(String title, String? text) async {
-    state = state.copyWith(status: TaskEditingStatus.loading);
+    state = state.copyWith(saveStatus: TaskEditingStatus.loading);
 
     Task task = state.task;
     task.title = title;
     task.text = text;
-    task.date = DateTime.now();
-    task.done = false;
+    task.date ??= DateTime.now();
 
     try {
       if (task.id == null) {
@@ -44,9 +43,22 @@ class TaskEditingNotifier extends StateNotifier<TaskEditingState> {
       } else {
         await _service.updateTask(task);
       }
-      state = state.copyWith(status: TaskEditingStatus.success);
+      state = state.copyWith(saveStatus: TaskEditingStatus.success);
     } catch (e) {
-      state = state.copyWith(status: TaskEditingStatus.failed);
+      state = state.copyWith(saveStatus: TaskEditingStatus.failed);
+      rethrow;
+    }
+  }
+
+  Future<void> deleteTask() async {
+    state = state.copyWith(deleteStatus: TaskEditingStatus.loading);
+
+    try {
+      await _service.deleteTask(state.task);
+      state = state.copyWith(deleteStatus: TaskEditingStatus.success);
+    } catch (e) {
+      state = state.copyWith(deleteStatus: TaskEditingStatus.failed);
+      rethrow;
     }
   }
 }

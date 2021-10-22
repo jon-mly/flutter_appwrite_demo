@@ -23,6 +23,7 @@ class TasksService implements ITasksService {
   // Streams with Realtime
   //
 
+  @override
   Stream<RealtimeMessage> getTasksStream() {
     final Realtime realtime = _read(appwriteRealtimeProvider);
     final String collectionId = _read(configurationProvider).appwriteDbTasksId;
